@@ -1,16 +1,33 @@
+import { Navbar } from "@/components/navbar";
+import { HeroSection } from "@/components/sections/hero";
+import { StatsSection } from "@/components/sections/stats";
+import { ProblemSection } from "@/components/sections/problem";
+import { HowItWorksSection } from "@/components/sections/how-it-works";
+import { DemoSection } from "@/components/sections/demo";
+import { FeaturesSection } from "@/components/sections/features";
+import { ArchitectureSection } from "@/components/sections/architecture";
+import { AssumptionsSection } from "@/components/sections/assumptions";
+import { TeamSection } from "@/components/sections/team";
+import { TechStackSection } from "@/components/sections/tech-stack";
+import { Footer } from "@/components/footer";
+
 export default function Home() {
   return (
-    <div className="flex min-h-screen items-center justify-center font-sans">
-      <main className="flex w-full max-w-3xl flex-col items-center gap-8 px-6 py-16 text-center sm:items-start sm:text-left">
-        <div className="flex flex-col gap-4">
-          <h1 className="text-4xl font-bold tracking-tight">
-            IIT BOMBAY Techfest
-          </h1>
-          <p className="max-w-md text-lg text-muted-foreground">
-            To get started, send a prompt or modify this page directly.
-          </p>
-        </div>
+    <div className="relative min-h-screen">
+      <Navbar />
+      <main>
+        <HeroSection />
+        <StatsSection />
+        <ProblemSection />
+        <HowItWorksSection />
+        <DemoSection />
+        <FeaturesSection />
+        <ArchitectureSection />
+        <AssumptionsSection />
+        <TeamSection />
+        <TechStackSection />
       </main>
+      <Footer />
     </div>
   );
 }
