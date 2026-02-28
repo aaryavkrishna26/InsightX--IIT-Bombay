@@ -3,8 +3,9 @@
 import { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
 import { motion } from "framer-motion";
-import { Sun, Moon, Menu, X, Brain } from "lucide-react";
+import { Sun, Moon, Menu, X, Brain, LayoutDashboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 const navLinks = [
   { label: "Problem", href: "#problem" },
@@ -62,6 +63,12 @@ export function Navbar() {
         </div>
 
         <div className="flex items-center gap-2">
+          <Link href="/dashboard">
+            <Button variant="default" size="sm" className="gap-2 rounded-lg">
+              <LayoutDashboard className="h-4 w-4" />
+              <span className="hidden sm:inline">Dashboard</span>
+            </Button>
+          </Link>
           {mounted && (
             <Button
               variant="ghost"
