@@ -6,6 +6,30 @@ export const REGIONS = ["Maharashtra", "Delhi", "Karnataka", "Tamil Nadu", "Guja
 export const AGE_GROUPS = ["18-25", "26-35", "36-45", "46-55", "56+"] as const;
 export const PAYMENT_METHODS = ["UPI", "Credit Card", "Debit Card", "Net Banking", "Wallet"] as const;
 
+// ── INR Formatter ──
+const inrFormatter = new Intl.NumberFormat('en-IN', {
+  style: 'currency',
+  currency: 'INR',
+  maximumFractionDigits: 0,
+});
+
+const inrFormatterDecimals = new Intl.NumberFormat('en-IN', {
+  style: 'currency',
+  currency: 'INR',
+  maximumFractionDigits: 2,
+});
+
+export function formatINR(amount: number, decimals = false): string {
+  return decimals ? inrFormatterDecimals.format(amount) : inrFormatter.format(amount);
+}
+
+export function formatINRCompact(amount: number): string {
+  if (amount >= 10000000) return `₹${(amount / 10000000).toFixed(1)}Cr`;
+  if (amount >= 100000) return `₹${(amount / 100000).toFixed(1)}L`;
+  if (amount >= 1000) return `₹${(amount / 1000).toFixed(1)}K`;
+  return `₹${amount}`;
+}
+
 export function randomFrom<T>(arr: readonly T[]): T {
   return arr[Math.floor(Math.random() * arr.length)];
 }
@@ -56,7 +80,7 @@ export function generateOrder(): Order {
   for (let i = 0; i < numItems; i++) {
     const name = randomFrom(ITEM_NAMES[category] || ["Item"]);
     const qty = randomBetween(1, 3);
-    const price = randomBetween(50, 2000);
+    const price = randomBetween(25, 1000);
     items.push({ name, qty, price });
     totalAmount += qty * price;
   }
@@ -134,7 +158,7 @@ export const GEO_DATA = REGIONS.map((region) => ({
   lat: getRegionCoord(region).lat,
   lng: getRegionCoord(region).lng,
   transactions: randomBetween(5000, 80000),
-  revenue: randomBetween(500000, 8000000),
+  revenue: randomBetween(250000, 4000000),
   fraudRate: +(Math.random() * 12 + 1).toFixed(1),
 }));
 
@@ -338,7 +362,7 @@ export function generateAnalysisResult(question: string) {
     metrics = [
       { label: "Total Fraud", value: `${randomBetween(10000, 20000).toLocaleString()}`, change: "+8.2%" },
       { label: "Fraud Rate", value: `${(Math.random() * 5 + 3).toFixed(1)}%` },
-      { label: "Avg Fraud Amt", value: `$${randomBetween(150, 400)}` },
+      { label: "Avg Fraud Amt", value: formatINR(randomBetween(75, 200)) },
       { label: "Detection Rate", value: `${randomBetween(85, 97)}%`, change: "+3.1%" },
     ];
   } else if (isDevice) {
@@ -347,7 +371,7 @@ export function generateAnalysisResult(question: string) {
     insight = "Mobile devices (Android + iOS) dominate with 78% of all transactions. iOS users show 22% higher average order values. Desktop has the highest conversion rate at 4.2%. Web traffic is primarily browse-only with lower checkout completion.";
     metrics = [
       { label: "Top Device", value: "Android", change: "45% share" },
-      { label: "Highest AOV", value: "iOS", change: "$68.40" },
+      { label: "Highest AOV", value: "iOS", change: "₹2,850" },
       { label: "Best Convert", value: "Desktop", change: "4.2%" },
       { label: "Total Devices", value: "4 Types" },
     ];
@@ -357,8 +381,8 @@ export function generateAnalysisResult(question: string) {
     insight = "Food and Electronics lead category performance, contributing 52% of total revenue. Fashion shows the highest growth rate at 18% MoM. Grocery has strong repeat purchase patterns with 3.2x monthly frequency. Travel shows seasonal spikes during holiday periods.";
     metrics = [
       { label: "Top Category", value: "Food", change: "+15%" },
-      { label: "Total Revenue", value: `$${(Math.random() * 5 + 8).toFixed(1)}M` },
-      { label: "Avg Basket", value: `$${randomBetween(40, 120)}` },
+      { label: "Total Revenue", value: `₹${(Math.random() * 2.5 + 4).toFixed(1)}Cr` },
+      { label: "Avg Basket", value: formatINR(randomBetween(500, 3000)) },
       { label: "Growth Rate", value: "18% MoM", change: "+4.2%" },
     ];
   } else if (isTime) {
@@ -388,15 +412,15 @@ export function generateAnalysisResult(question: string) {
       { label: "Top Region", value: "Maharashtra", change: "22% share" },
       { label: "Total Regions", value: "10 States" },
       { label: "Fastest Growth", value: "Karnataka", change: "+24% QoQ" },
-      { label: "Avg Revenue", value: `$${(Math.random() * 2 + 1).toFixed(1)}M` },
+      { label: "Avg Revenue", value: `₹${(Math.random() * 1 + 0.5).toFixed(1)}Cr` },
     ];
   } else if (isRevenue) {
-    chartData = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"].map((m) => ({ name: m, value: randomBetween(1000000, 5000000) }));
+    chartData = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"].map((m) => ({ name: m, value: randomBetween(500000, 2500000) }));
     sql = `SELECT DATE_TRUNC('month', created_at) as month,\n  SUM(amount) as revenue,\n  COUNT(DISTINCT user_id) as active_users,\n  SUM(amount)/COUNT(DISTINCT user_id) as arpu\nFROM transactions\nGROUP BY month\nORDER BY month;`;
-    insight = "Revenue shows consistent 12% MoM growth with Q4 projections exceeding $15M. ARPU has increased by 18% over the last quarter. Top 10% of customers contribute 42% of total revenue. Reducing fraud losses could add $1.2M to net revenue annually.";
+    insight = "Revenue shows consistent 12% MoM growth with Q4 projections exceeding ₹6Cr. ARPU has increased by 18% over the last quarter. Top 10% of customers contribute 42% of total revenue. Reducing fraud losses could add ₹50L to net revenue annually.";
     metrics = [
-      { label: "Q4 Revenue", value: `$${(Math.random() * 5 + 12).toFixed(1)}M`, change: "+12%" },
-      { label: "ARPU", value: `$${randomBetween(45, 120)}`, change: "+18%" },
+      { label: "Q4 Revenue", value: `₹${(Math.random() * 2.5 + 5).toFixed(1)}Cr`, change: "+12%" },
+      { label: "ARPU", value: formatINR(randomBetween(1500, 5000)), change: "+18%" },
       { label: "Net Margin", value: `${randomBetween(15, 35)}%` },
       { label: "Growth", value: "12% MoM", change: "Steady" },
     ];
@@ -408,7 +432,7 @@ export function generateAnalysisResult(question: string) {
       { label: "Top Segment", value: "26-35", change: "38% spend" },
       { label: "Fastest Growing", value: "18-25", change: "+32%" },
       { label: "Best Retention", value: "46-55", change: "72%" },
-      { label: "Avg AOV", value: `$${randomBetween(40, 85)}` },
+      { label: "Avg AOV", value: formatINR(randomBetween(500, 2000)) },
     ];
   } else {
     // Generic fallback
@@ -419,7 +443,7 @@ export function generateAnalysisResult(question: string) {
       { label: "Transactions", value: `${randomBetween(400, 600)}K/day` },
       { label: "Uptime", value: "99.7%", change: "Stable" },
       { label: "Users", value: `${randomBetween(80, 200)}K`, change: "+28%" },
-      { label: "Avg Value", value: `$${randomBetween(40, 100)}` },
+      { label: "Avg Value", value: formatINR(randomBetween(500, 2500)) },
     ];
   }
 

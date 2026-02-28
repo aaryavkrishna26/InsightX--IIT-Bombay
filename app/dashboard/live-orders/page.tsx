@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { generateOrder, type Order } from "@/lib/mock-data";
+import { generateOrder, formatINR, type Order } from "@/lib/mock-data";
 import Link from "next/link";
 
 export default function LiveOrdersPage() {
@@ -111,7 +111,7 @@ export default function LiveOrdersPage() {
 
               <div className="mt-3 flex items-center justify-between">
                 <span className="text-lg font-bold text-card-foreground">
-                  ${order.amount.toLocaleString()}
+                  {formatINR(order.amount)}
                 </span>
                 <Button
                   variant="outline"
@@ -181,10 +181,10 @@ export default function LiveOrdersPage() {
 
                 <div className="rounded-2xl border border-border p-4">
                   <h4 className="text-xs font-semibold text-muted-foreground">
-                    Total Bill
+                    Total Bill (₹)
                   </h4>
                   <p className="mt-1 text-3xl font-bold text-card-foreground">
-                    ${selectedOrder.amount.toLocaleString()}
+                    {formatINR(selectedOrder.amount)}
                   </p>
                 </div>
 
@@ -234,7 +234,7 @@ export default function LiveOrdersPage() {
                           {item.name} x{item.qty}
                         </span>
                         <span className="font-medium text-card-foreground">
-                          ${(item.qty * item.price).toLocaleString()}
+                          {formatINR(item.qty * item.price)}
                         </span>
                       </div>
                     ))}
@@ -242,7 +242,7 @@ export default function LiveOrdersPage() {
                       <div className="flex items-center justify-between text-sm font-bold">
                         <span className="text-card-foreground">Total</span>
                         <span className="text-primary">
-                          ${selectedOrder.amount.toLocaleString()}
+                          {formatINR(selectedOrder.amount)}
                         </span>
                       </div>
                     </div>

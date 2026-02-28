@@ -29,6 +29,7 @@ import {
   AGE_GROUPS,
   generateAnalysisResult,
   randomBetween,
+  formatINR,
 } from "@/lib/mock-data";
 import {
   BarChart,

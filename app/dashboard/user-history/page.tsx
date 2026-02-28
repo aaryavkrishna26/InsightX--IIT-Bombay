@@ -16,7 +16,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { generateUserHistory } from "@/lib/mock-data";
+import { generateUserHistory, formatINR } from "@/lib/mock-data";
 import {
   BarChart,
   Bar,
@@ -79,8 +79,8 @@ function UserHistoryContent() {
   const statCards = userData
     ? [
         { label: "Total Orders", value: userData.totalOrders.toString(), icon: Package },
-        { label: "Lifetime Spending", value: `$${userData.totalSpend.toLocaleString()}`, icon: DollarSign },
-        { label: "Avg Order Value", value: `$${userData.avgOrder.toLocaleString()}`, icon: ShoppingBag },
+        { label: "Lifetime Spending (₹)", value: formatINR(userData.totalSpend), icon: DollarSign },
+        { label: "Avg Order Value (₹)", value: formatINR(userData.avgOrder), icon: ShoppingBag },
         { label: "Top Category", value: userData.topCategory, icon: Tags },
         { label: "Device Preference", value: userData.topDevice, icon: Smartphone },
         { label: "Fraud Count", value: userData.fraudCount.toString(), icon: ShieldAlert },

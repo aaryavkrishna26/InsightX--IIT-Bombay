@@ -25,7 +25,7 @@ import {
   Pie,
   Cell,
 } from "recharts";
-import { CATEGORIES, DEVICES, REGIONS, randomBetween } from "@/lib/mock-data";
+import { CATEGORIES, DEVICES, REGIONS, randomBetween, formatINR } from "@/lib/mock-data";
 
 const CHART_COLORS = [
   "oklch(0.55 0.18 270)",
@@ -56,7 +56,7 @@ function AnimatedCounter({ target, prefix = "", suffix = "" }: { target: number;
     }, duration / steps);
     return () => clearInterval(timer);
   }, [target]);
-  return <span>{prefix}{value.toLocaleString()}{suffix}</span>;
+  return <span>{prefix}{new Intl.NumberFormat('en-IN').format(value)}{suffix}</span>;
 }
 
 export default function DashboardOverview() {
@@ -76,17 +76,17 @@ export default function DashboardOverview() {
   const generateData = useCallback(() => {
     setStats({
       totalTransactions: randomBetween(450000, 620000),
-      revenue: randomBetween(1800000, 3200000),
+      revenue: randomBetween(900000, 1600000),
       fraudRate: +(Math.random() * 4 + 2).toFixed(1),
       peakHour: "7 PM",
       activeUsers: randomBetween(82000, 145000),
     });
-    setCategoryData(CATEGORIES.map((c) => ({ name: c, value: randomBetween(30000, 120000) })));
+    setCategoryData(CATEGORIES.map((c) => ({ name: c, value: randomBetween(15000, 60000) })));
     setTrendData(
       ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((d) => ({
         name: d,
         transactions: randomBetween(50000, 90000),
-        revenue: randomBetween(800000, 1500000),
+        revenue: randomBetween(400000, 750000),
       }))
     );
     setDeviceData(DEVICES.map((d) => ({ name: d, value: randomBetween(15000, 70000) })));
@@ -108,9 +108,9 @@ export default function DashboardOverview() {
       up: true,
     },
     {
-      label: "Revenue Today",
+      label: "Revenue Today (₹)",
       value: stats.revenue,
-      prefix: "$",
+      prefix: "₹",
       suffix: "",
       icon: DollarSign,
       change: "+8.7%",
