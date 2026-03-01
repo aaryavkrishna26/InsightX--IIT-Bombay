@@ -2,7 +2,6 @@
 
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { motion } from "framer-motion";
 import {
   Package,
   DollarSign,
@@ -15,7 +14,6 @@ import {
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { generateUserHistory, formatINR } from "@/lib/mock-data";
 import {
   BarChart,
@@ -79,8 +77,8 @@ function UserHistoryContent() {
   const statCards = userData
     ? [
         { label: "Total Orders", value: userData.totalOrders.toString(), icon: Package },
-        { label: "Lifetime Spending (₹)", value: formatINR(userData.totalSpend), icon: DollarSign },
-        { label: "Avg Order Value (₹)", value: formatINR(userData.avgOrder), icon: ShoppingBag },
+        { label: "Lifetime Spending", value: formatINR(userData.totalSpend), icon: DollarSign },
+        { label: "Avg Order Value", value: formatINR(userData.avgOrder), icon: ShoppingBag },
         { label: "Top Category", value: userData.topCategory, icon: Tags },
         { label: "Device Preference", value: userData.topDevice, icon: Smartphone },
         { label: "Fraud Count", value: userData.fraudCount.toString(), icon: ShieldAlert },
@@ -92,7 +90,7 @@ function UserHistoryContent() {
       <div>
         <h2 className="text-2xl font-bold text-foreground">User History</h2>
         <p className="mt-1 text-sm text-muted-foreground">
-          Look up any user to view their complete transaction history and analytics.
+          Look up any user to view their transaction history and analytics.
         </p>
       </div>
 
@@ -102,41 +100,37 @@ function UserHistoryContent() {
           value={userIdInput}
           onChange={(e) => setUserIdInput(e.target.value)}
           placeholder="Enter User ID (e.g. USR-12345)"
-          className="h-11 max-w-md rounded-xl"
+          className="h-10 max-w-md"
           onKeyDown={(e) => e.key === "Enter" && lookupUser(userIdInput)}
         />
-        <Button onClick={() => lookupUser(userIdInput)} disabled={loading} className="gap-2 rounded-xl">
+        <Button onClick={() => lookupUser(userIdInput)} disabled={loading} className="gap-2">
           <Search className="h-4 w-4" />
           Lookup
         </Button>
       </div>
 
       {loading && (
-        <div className="flex items-center justify-center rounded-2xl border border-border bg-card p-16">
+        <div className="flex items-center justify-center rounded-xl border border-border bg-card p-12">
           <div className="flex flex-col items-center gap-3">
-            <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+            <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
             <p className="text-sm text-muted-foreground">Loading user data...</p>
           </div>
         </div>
       )}
 
       {!loading && !userData && (
-        <div className="flex items-center justify-center rounded-2xl border border-dashed border-border bg-card/50 p-16">
+        <div className="flex items-center justify-center rounded-xl border border-dashed border-border bg-card/50 p-12">
           <div className="flex flex-col items-center gap-3 text-center">
             <UserSearch className="h-8 w-8 text-muted-foreground/50" />
             <p className="text-sm text-muted-foreground">
-              Enter a User ID to view their transaction history and analytics.
+              Enter a User ID to view their transaction history.
             </p>
           </div>
         </div>
       )}
 
       {!loading && userData && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="space-y-6"
-        >
+        <div className="space-y-6">
           {/* User badge */}
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
@@ -150,37 +144,30 @@ function UserHistoryContent() {
 
           {/* Stat cards */}
           <div className="grid grid-cols-2 gap-4 lg:grid-cols-3 xl:grid-cols-6">
-            {statCards.map((card, i) => (
-              <motion.div
-                key={card.label}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.06 }}
-                className="rounded-2xl border border-border bg-card p-4 shadow-sm"
-              >
+            {statCards.map((card) => (
+              <div key={card.label} className="rounded-xl border border-border bg-card p-4">
                 <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
                   <card.icon className="h-4 w-4 text-primary" />
                 </div>
                 <p className="mt-2 text-lg font-bold text-card-foreground">{card.value}</p>
                 <p className="text-[11px] text-muted-foreground">{card.label}</p>
-              </motion.div>
+              </div>
             ))}
           </div>
 
           {/* Charts */}
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-            {/* Monthly Spending */}
-            <div className="rounded-2xl border border-border bg-card p-6 shadow-sm">
+            <div className="rounded-xl border border-border bg-card p-5">
               <h3 className="text-sm font-semibold text-card-foreground">Monthly Spending</h3>
-              <div className="mt-4 h-64">
+              <div className="mt-4 h-56">
                 {userData.monthlySpending.length > 0 ? (
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={userData.monthlySpending}>
                       <CartesianGrid strokeDasharray="3 3" stroke="oklch(0.5 0 0 / 0.1)" />
                       <XAxis dataKey="month" tick={{ fontSize: 10 }} stroke="oklch(0.5 0 0 / 0.4)" />
                       <YAxis tick={{ fontSize: 11 }} stroke="oklch(0.5 0 0 / 0.4)" />
-                      <Tooltip contentStyle={{ borderRadius: "12px", border: "1px solid oklch(0.5 0 0 / 0.1)", fontSize: "12px" }} />
-                      <Bar dataKey="amount" fill="oklch(0.55 0.18 270)" radius={[6, 6, 0, 0]} />
+                      <Tooltip contentStyle={{ borderRadius: "8px", fontSize: "12px" }} />
+                      <Bar dataKey="amount" fill="oklch(0.55 0.18 270)" radius={[4, 4, 0, 0]} />
                     </BarChart>
                   </ResponsiveContainer>
                 ) : (
@@ -191,10 +178,9 @@ function UserHistoryContent() {
               </div>
             </div>
 
-            {/* Category Distribution */}
-            <div className="rounded-2xl border border-border bg-card p-6 shadow-sm">
+            <div className="rounded-xl border border-border bg-card p-5">
               <h3 className="text-sm font-semibold text-card-foreground">Category Distribution</h3>
-              <div className="mt-4 h-64">
+              <div className="mt-4 h-56">
                 {userData.categoryDist.length > 0 ? (
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
@@ -204,14 +190,14 @@ function UserHistoryContent() {
                         nameKey="name"
                         cx="50%"
                         cy="50%"
-                        outerRadius={90}
+                        outerRadius={80}
                         label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
                       >
                         {userData.categoryDist.map((_, idx) => (
                           <Cell key={`uh-${idx}`} fill={CHART_COLORS[idx % CHART_COLORS.length]} />
                         ))}
                       </Pie>
-                      <Tooltip contentStyle={{ borderRadius: "12px", border: "1px solid oklch(0.5 0 0 / 0.1)", fontSize: "12px" }} />
+                      <Tooltip contentStyle={{ borderRadius: "8px", fontSize: "12px" }} />
                     </PieChart>
                   </ResponsiveContainer>
                 ) : (
@@ -222,7 +208,7 @@ function UserHistoryContent() {
               </div>
             </div>
           </div>
-        </motion.div>
+        </div>
       )}
     </div>
   );
@@ -232,8 +218,8 @@ export default function UserHistoryPage() {
   return (
     <Suspense
       fallback={
-        <div className="flex items-center justify-center p-16">
-          <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+        <div className="flex items-center justify-center p-12">
+          <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
         </div>
       }
     >

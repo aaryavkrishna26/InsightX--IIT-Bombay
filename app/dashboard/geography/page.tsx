@@ -1,9 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
 import { Globe, MapPin } from "lucide-react";
-import { GEO_DATA } from "@/lib/mock-data";
+import { GEO_DATA, formatINR } from "@/lib/mock-data";
 import {
   BarChart,
   Bar,
@@ -82,11 +81,7 @@ export default function GeographyPage() {
 
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
         {/* Visual map representation */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="rounded-2xl border border-border bg-card p-6 shadow-sm"
-        >
+        <div className="rounded-xl border border-border bg-card p-5">
           <h3 className="mb-4 flex items-center gap-2 text-sm font-semibold text-card-foreground">
             <Globe className="h-4 w-4 text-primary" />
             India - Regional Heatmap
@@ -101,14 +96,11 @@ export default function GeographyPage() {
                   : region.fraudRate / maxVal;
 
               return (
-                <motion.div
+                <div
                   key={region.region}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: i * 0.05 }}
                   onMouseEnter={() => setHoveredRegion(region.region)}
                   onMouseLeave={() => setHoveredRegion(null)}
-                  className="relative cursor-pointer rounded-xl border border-border p-4 transition-all hover:border-primary/50 hover:shadow-md"
+                  className="relative cursor-pointer rounded-lg border border-border p-3 transition-all hover:border-primary/50"
                   style={{
                     background: `oklch(0.55 0.18 270 / ${Math.max(intensity * 0.25, 0.05)})`,
                   }}
@@ -121,9 +113,9 @@ export default function GeographyPage() {
                   </div>
                   <p className="mt-2 text-lg font-bold text-card-foreground">
                     {viewMode === "transactions"
-                      ? region.transactions.toLocaleString()
+                      ? new Intl.NumberFormat("en-IN").format(region.transactions)
                       : viewMode === "revenue"
-                      ? `$${(region.revenue / 1000000).toFixed(1)}M`
+                      ? formatINR(region.revenue)
                       : `${region.fraudRate}%`}
                   </p>
                   {i === 0 && (
@@ -134,32 +126,23 @@ export default function GeographyPage() {
 
                   {/* Tooltip on hover */}
                   {hoveredRegion === region.region && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 5 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="absolute -bottom-1 left-0 right-0 translate-y-full z-10 rounded-lg border border-border bg-popover p-3 shadow-lg"
-                    >
+                    <div className="absolute -bottom-1 left-0 right-0 translate-y-full z-10 rounded-lg border border-border bg-popover p-3 shadow-lg">
                       <p className="text-xs font-semibold text-popover-foreground">{region.region}</p>
                       <div className="mt-1 space-y-0.5 text-[11px] text-muted-foreground">
-                        <p>Transactions: {region.transactions.toLocaleString()}</p>
-                        <p>Revenue: ${(region.revenue / 1000000).toFixed(2)}M</p>
+                        <p>Transactions: {new Intl.NumberFormat("en-IN").format(region.transactions)}</p>
+                        <p>Revenue: {formatINR(region.revenue)}</p>
                         <p>Fraud Rate: {region.fraudRate}%</p>
                       </div>
-                    </motion.div>
+                    </div>
                   )}
-                </motion.div>
+                </div>
               );
             })}
           </div>
-        </motion.div>
+        </div>
 
         {/* Chart */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="rounded-2xl border border-border bg-card p-6 shadow-sm"
-        >
+        <div className="rounded-xl border border-border bg-card p-5">
           <h3 className="mb-4 text-sm font-semibold text-card-foreground">
             Regional Comparison - {viewMode === "fraud" ? "Fraud %" : viewMode.charAt(0).toUpperCase() + viewMode.slice(1)}
           </h3>
@@ -180,7 +163,7 @@ export default function GeographyPage() {
               </ResponsiveContainer>
             )}
           </div>
-        </motion.div>
+        </div>
       </div>
     </div>
   );
