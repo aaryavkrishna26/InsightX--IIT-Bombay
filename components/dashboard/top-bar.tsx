@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { Sun, Moon, Bell, User, Home } from "lucide-react";
+import { Sun, Moon, Home, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -19,15 +19,12 @@ import { Badge } from "@/components/ui/badge";
 const pathLabels: Record<string, string> = {
   "/dashboard": "Overview",
   "/dashboard/fraud": "Fraud Analysis",
-  "/dashboard/categories": "Category Analysis",
   "/dashboard/devices": "Device Analysis",
   "/dashboard/time-trends": "Time Trends",
   "/dashboard/geography": "Geographic Map",
-  "/dashboard/live-orders": "Live Orders",
   "/dashboard/user-history": "User History",
   "/dashboard/analyzer": "Analyzer Tool",
   "/dashboard/questions": "Question Bank",
-  "/dashboard/insights": "Leadership Insights",
 };
 
 export function DashboardTopBar() {
@@ -41,8 +38,8 @@ export function DashboardTopBar() {
   }, []);
 
   return (
-    <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-border bg-background/80 px-6 backdrop-blur-xl">
-      <h1 className="text-lg font-semibold text-foreground">{pageTitle}</h1>
+    <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-border bg-background px-6">
+      <h1 className="text-base font-semibold text-foreground">{pageTitle}</h1>
 
       <div className="flex items-center gap-2">
         <Link href="/">
@@ -51,35 +48,6 @@ export function DashboardTopBar() {
           </Button>
         </Link>
 
-        {/* Notifications */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="relative rounded-lg" aria-label="Notifications">
-              <Bell className="h-4 w-4" />
-              <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-destructive-foreground text-[9px] font-bold text-primary-foreground">
-                3
-              </span>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-72">
-            <DropdownMenuLabel>Notifications</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem className="flex flex-col items-start gap-1">
-              <span className="text-sm font-medium">Fraud spike detected</span>
-              <span className="text-xs text-muted-foreground">Maharashtra region, 23% above threshold</span>
-            </DropdownMenuItem>
-            <DropdownMenuItem className="flex flex-col items-start gap-1">
-              <span className="text-sm font-medium">Revenue milestone</span>
-              <span className="text-xs text-muted-foreground">Daily revenue crossed $2M mark</span>
-            </DropdownMenuItem>
-            <DropdownMenuItem className="flex flex-col items-start gap-1">
-              <span className="text-sm font-medium">System health</span>
-              <span className="text-xs text-muted-foreground">All services running at 99.9% uptime</span>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-
-        {/* Theme toggle */}
         {mounted && (
           <Button
             variant="ghost"
@@ -92,7 +60,6 @@ export function DashboardTopBar() {
           </Button>
         )}
 
-        {/* Profile */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon" className="rounded-lg" aria-label="Profile">

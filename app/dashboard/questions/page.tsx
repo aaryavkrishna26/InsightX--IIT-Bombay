@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import {
   Search,
   ChevronDown,
@@ -12,7 +11,6 @@ import {
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import {
   ALL_QUESTIONS,
   QUESTION_CATEGORIES,
@@ -72,7 +70,7 @@ export default function QuestionBankPage() {
     setResult(null);
     setSqlOpen(false);
 
-    await new Promise((r) => setTimeout(r, 1200));
+    await new Promise((r) => setTimeout(r, 1000));
     const analysis = generateAnalysisResult(question);
     setResult(analysis);
     setLoading(false);
@@ -80,28 +78,25 @@ export default function QuestionBankPage() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div>
         <h2 className="text-2xl font-bold text-foreground">Question Bank</h2>
         <p className="mt-1 text-sm text-muted-foreground">
-          {ALL_QUESTIONS.length} curated business analytics questions. Click any
-          question to run an instant analysis.
+          {ALL_QUESTIONS.length} business analytics questions. Click any question to run an instant analysis.
         </p>
       </div>
 
-      {/* Search + Category Filters */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search questions..."
-            className="h-10 rounded-xl pl-9"
-          />
-        </div>
+      {/* Search */}
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+        <Input
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Search questions..."
+          className="h-10 pl-9"
+        />
       </div>
 
+      {/* Category Filters */}
       <div className="flex flex-wrap gap-2">
         <button
           onClick={() => setActiveCategory("All")}
@@ -133,26 +128,23 @@ export default function QuestionBankPage() {
 
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
         {/* Question List */}
-        <div className="space-y-2 max-h-[600px] overflow-y-auto rounded-2xl border border-border bg-card p-4">
+        <div className="max-h-[600px] space-y-1 overflow-y-auto rounded-xl border border-border bg-card p-3">
           {filteredQuestions.length === 0 ? (
             <p className="py-8 text-center text-sm text-muted-foreground">
               No questions match your search.
             </p>
           ) : (
-            filteredQuestions.map((q, i) => (
-              <motion.button
+            filteredQuestions.map((q) => (
+              <button
                 key={q.id}
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.2, delay: Math.min(i * 0.02, 0.5) }}
                 onClick={() => handleQuestionClick(q.question)}
-                className={`flex w-full items-start gap-3 rounded-xl px-4 py-3 text-left text-sm transition-all ${
+                className={`flex w-full items-start gap-3 rounded-lg px-3 py-2.5 text-left text-sm transition-all ${
                   selectedQuestion === q.question
                     ? "bg-primary/10 text-primary"
                     : "text-card-foreground hover:bg-secondary"
                 }`}
               >
-                <span className="mt-0.5 shrink-0 text-xs font-mono text-muted-foreground">
+                <span className="mt-0.5 shrink-0 font-mono text-xs text-muted-foreground">
                   {String(q.id).padStart(3, "0")}
                 </span>
                 <div className="flex-1">
@@ -162,7 +154,7 @@ export default function QuestionBankPage() {
                   </Badge>
                 </div>
                 <Sparkles className="mt-0.5 h-3 w-3 shrink-0 text-primary/40" />
-              </motion.button>
+              </button>
             ))
           )}
         </div>
@@ -170,157 +162,99 @@ export default function QuestionBankPage() {
         {/* Analysis Result */}
         <div className="space-y-4">
           {loading && (
-            <div className="flex items-center justify-center rounded-2xl border border-border bg-card p-16">
+            <div className="flex items-center justify-center rounded-xl border border-border bg-card p-12">
               <div className="flex flex-col items-center gap-3">
-                <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                <p className="text-sm text-muted-foreground">
-                  Analyzing query...
-                </p>
+                <Loader2 className="h-6 w-6 animate-spin text-primary" />
+                <p className="text-sm text-muted-foreground">Analyzing query...</p>
               </div>
             </div>
           )}
 
           {!loading && !result && (
-            <div className="flex items-center justify-center rounded-2xl border border-dashed border-border bg-card/50 p-16">
+            <div className="flex items-center justify-center rounded-xl border border-dashed border-border bg-card/50 p-12">
               <div className="flex flex-col items-center gap-3 text-center">
                 <Search className="h-8 w-8 text-muted-foreground/50" />
                 <p className="text-sm text-muted-foreground">
-                  Select a question from the list to see instant analysis
-                  results.
+                  Select a question to see analysis results.
                 </p>
               </div>
             </div>
           )}
 
-          <AnimatePresence>
-            {!loading && result && (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0 }}
-                className="space-y-4"
-              >
-                {/* Selected question */}
-                <div className="rounded-2xl border border-primary/20 bg-primary/5 p-4">
-                  <p className="text-sm font-semibold text-primary">
-                    {selectedQuestion}
-                  </p>
-                </div>
+          {!loading && result && (
+            <div className="space-y-4">
+              {/* Selected question */}
+              <div className="rounded-xl border border-primary/20 bg-primary/5 p-4">
+                <p className="text-sm font-semibold text-primary">{selectedQuestion}</p>
+              </div>
 
-                {/* Metric cards */}
-                <div className="grid grid-cols-2 gap-3">
-                  {result.metrics.map((m, i) => (
-                    <motion.div
-                      key={m.label}
-                      initial={{ opacity: 0, scale: 0.95 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ delay: i * 0.08 }}
-                      className="rounded-xl border border-border bg-card p-3 shadow-sm"
-                    >
-                      <p className="text-[11px] text-muted-foreground">
-                        {m.label}
-                      </p>
-                      <p className="mt-0.5 text-xl font-bold text-card-foreground">
-                        {m.value}
-                      </p>
-                      {m.change && (
-                        <p className="text-[11px] font-medium text-primary">
-                          {m.change}
-                        </p>
-                      )}
-                    </motion.div>
-                  ))}
-                </div>
-
-                {/* Chart */}
-                {result.chartData.length > 0 && (
-                  <div className="rounded-2xl border border-border bg-card p-4 shadow-sm">
-                    <h4 className="mb-3 text-xs font-semibold text-card-foreground">
-                      Visualization
-                    </h4>
-                    <div className="h-52">
-                      <ResponsiveContainer width="100%" height="100%">
-                        <BarChart data={result.chartData}>
-                          <CartesianGrid
-                            strokeDasharray="3 3"
-                            stroke="oklch(0.5 0 0 / 0.1)"
-                          />
-                          <XAxis
-                            dataKey="name"
-                            tick={{ fontSize: 10 }}
-                            stroke="oklch(0.5 0 0 / 0.4)"
-                          />
-                          <YAxis
-                            tick={{ fontSize: 10 }}
-                            stroke="oklch(0.5 0 0 / 0.4)"
-                          />
-                          <Tooltip
-                            contentStyle={{
-                              borderRadius: "12px",
-                              border: "1px solid oklch(0.5 0 0 / 0.1)",
-                              fontSize: "12px",
-                            }}
-                          />
-                          <Bar dataKey="value" radius={[6, 6, 0, 0]}>
-                            {result.chartData.map((_, idx) => (
-                              <Cell
-                                key={`q-${idx}`}
-                                fill={CHART_COLORS[idx % CHART_COLORS.length]}
-                              />
-                            ))}
-                          </Bar>
-                        </BarChart>
-                      </ResponsiveContainer>
-                    </div>
+              {/* Metric cards */}
+              <div className="grid grid-cols-2 gap-3">
+                {result.metrics.map((m) => (
+                  <div key={m.label} className="rounded-lg border border-border bg-card p-3">
+                    <p className="text-[11px] text-muted-foreground">{m.label}</p>
+                    <p className="mt-0.5 text-xl font-bold text-card-foreground">{m.value}</p>
+                    {m.change && (
+                      <p className="text-[11px] font-medium text-primary">{m.change}</p>
+                    )}
                   </div>
+                ))}
+              </div>
+
+              {/* Chart */}
+              {result.chartData.length > 0 && (
+                <div className="rounded-xl border border-border bg-card p-4">
+                  <h4 className="mb-3 text-xs font-semibold text-card-foreground">Visualization</h4>
+                  <div className="h-48">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart data={result.chartData}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="oklch(0.5 0 0 / 0.1)" />
+                        <XAxis dataKey="name" tick={{ fontSize: 10 }} stroke="oklch(0.5 0 0 / 0.4)" />
+                        <YAxis tick={{ fontSize: 10 }} stroke="oklch(0.5 0 0 / 0.4)" />
+                        <Tooltip contentStyle={{ borderRadius: "8px", fontSize: "12px" }} />
+                        <Bar dataKey="value" radius={[4, 4, 0, 0]}>
+                          {result.chartData.map((_, idx) => (
+                            <Cell key={`q-${idx}`} fill={CHART_COLORS[idx % CHART_COLORS.length]} />
+                          ))}
+                        </Bar>
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+              )}
+
+              {/* SQL */}
+              <div className="rounded-xl border border-border bg-card">
+                <button
+                  onClick={() => setSqlOpen(!sqlOpen)}
+                  className="flex w-full items-center justify-between px-4 py-3"
+                >
+                  <div className="flex items-center gap-2">
+                    <Terminal className="h-4 w-4 text-primary" />
+                    <span className="text-xs font-medium text-card-foreground">Generated SQL</span>
+                  </div>
+                  {sqlOpen ? (
+                    <ChevronUp className="h-4 w-4 text-muted-foreground" />
+                  ) : (
+                    <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                  )}
+                </button>
+                {sqlOpen && (
+                  <pre className="border-t border-border bg-secondary/50 px-4 py-3 font-mono text-xs leading-relaxed text-secondary-foreground">
+                    {result.sql}
+                  </pre>
                 )}
+              </div>
 
-                {/* SQL */}
-                <div className="rounded-2xl border border-border bg-card shadow-sm">
-                  <button
-                    onClick={() => setSqlOpen(!sqlOpen)}
-                    className="flex w-full items-center justify-between px-4 py-3"
-                  >
-                    <div className="flex items-center gap-2">
-                      <Terminal className="h-4 w-4 text-primary" />
-                      <span className="text-xs font-medium text-card-foreground">
-                        Generated SQL
-                      </span>
-                    </div>
-                    {sqlOpen ? (
-                      <ChevronUp className="h-4 w-4 text-muted-foreground" />
-                    ) : (
-                      <ChevronDown className="h-4 w-4 text-muted-foreground" />
-                    )}
-                  </button>
-                  <AnimatePresence>
-                    {sqlOpen && (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: "auto", opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        className="overflow-hidden"
-                      >
-                        <pre className="border-t border-border bg-secondary/50 px-4 py-3 font-mono text-xs leading-relaxed text-secondary-foreground">
-                          {result.sql}
-                        </pre>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-
-                {/* Insight */}
-                <div className="rounded-2xl border border-primary/20 bg-primary/5 p-4">
-                  <h4 className="text-xs font-semibold text-primary">
-                    Leadership Insight
-                  </h4>
-                  <p className="mt-1.5 text-sm leading-relaxed text-foreground">
-                    {result.insight}
-                  </p>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+              {/* Insight */}
+              <div className="rounded-xl border border-primary/20 bg-primary/5 p-4">
+                <h4 className="text-xs font-semibold text-primary">Insight</h4>
+                <p className="mt-1.5 text-sm leading-relaxed text-foreground">
+                  {result.insight}
+                </p>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
