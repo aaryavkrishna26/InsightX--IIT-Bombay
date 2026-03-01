@@ -1,31 +1,27 @@
 import { Navbar } from "@/components/navbar";
-import { HeroSection } from "@/components/sections/hero";
-import { StatsSection } from "@/components/sections/stats";
+import { IntroSection } from "@/components/sections/hero";
 import { ProblemSection } from "@/components/sections/problem";
-import { HowItWorksSection } from "@/components/sections/how-it-works";
-import { DemoSection } from "@/components/sections/demo";
-import { FeaturesSection } from "@/components/sections/features";
+import { SolutionSection } from "@/components/sections/how-it-works";
 import { ArchitectureSection } from "@/components/sections/architecture";
-import { AssumptionsSection } from "@/components/sections/assumptions";
+import { FeaturesSection } from "@/components/sections/features";
+import { DemoSection } from "@/components/sections/demo";
+import { LimitationsSection } from "@/components/sections/assumptions";
 import { TeamSection } from "@/components/sections/team";
-import { TechStackSection } from "@/components/sections/tech-stack";
 import { Footer } from "@/components/footer";
 
 export default function Home() {
   return (
-    <div className="relative min-h-screen">
+    <div className="min-h-screen">
       <Navbar />
-      <main>
-        <HeroSection />
-        <StatsSection />
+      <main className="mx-auto max-w-3xl px-6">
+        <IntroSection />
         <ProblemSection />
-        <HowItWorksSection />
-        <DemoSection />
-        <FeaturesSection />
+        <SolutionSection />
         <ArchitectureSection />
-        <AssumptionsSection />
+        <FeaturesSection />
+        <DemoSection />
+        <LimitationsSection />
         <TeamSection />
-        <TechStackSection />
       </main>
       <Footer />
     </div>
