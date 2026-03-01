@@ -8,25 +8,13 @@ const _inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const _geistMono = Geist_Mono({ subsets: ["latin"], variable: "--font-geist-mono" });
 
 export const metadata: Metadata = {
-  title: "InsightAI - Leadership Intelligence Assistant",
+  title: "InsightAI -- Leadership Intelligence Assistant",
   description:
-    "AI-powered analytics assistant for decision-makers in digital payments. Ask your data questions in natural English and get leadership insights.",
-  generator: "v0.app",
-  icons: {
-    icon: [
-      { url: "/icon-light-32x32.png", media: "(prefers-color-scheme: light)" },
-      { url: "/icon-dark-32x32.png", media: "(prefers-color-scheme: dark)" },
-      { url: "/icon.svg", type: "image/svg+xml" },
-    ],
-    apple: "/apple-icon.png",
-  },
+    "An AI-powered analytics assistant for decision-makers in digital payments. Natural language queries, SQL generation, and leadership-ready insights.",
 };
 
 export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f5f3ff" },
-    { media: "(prefers-color-scheme: dark)", color: "#1a1625" },
-  ],
+  themeColor: "#ffffff",
   userScalable: true,
 };
 
@@ -40,12 +28,12 @@ export default function RootLayout({
       <body className="font-sans antialiased">
         <ThemeProvider
           attribute="class"
-          defaultTheme="dark"
+          defaultTheme="light"
           enableSystem
           disableTransitionOnChange
         >
           {children}
-          <Toaster richColors position="bottom-right" />
+          <Toaster position="bottom-right" />
         </ThemeProvider>
       </body>
     </html>
